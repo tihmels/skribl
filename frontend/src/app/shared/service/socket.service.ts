@@ -19,8 +19,12 @@ export class SocketService {
 
   connect(game: number, player: number) {
     this._socket = new WebSocketSubject<Message>(wsUrl + '/' + game + '/player/' + player);
-    this._socket.subscribe((message) => this._socket.next(message));
     this.socket$ = this._socket.asObservable();
+  }
+
+  sendMessage(message: Message) {
+    console.log(message)
+    this._socket.next(message);
   }
 
   getSocketObservable() {

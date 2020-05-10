@@ -22,7 +22,7 @@ export class GameFacade {
   }
 
   createGame(player: Player) {
-    return this.gameApi.create(new Game(null, player)).pipe(tap(result => this.gameStore.setState(result)));
+    return this.gameApi.create(new Game(null, player, false, true, null)).pipe(tap(result => this.gameStore.setState(result)));
   }
 
 

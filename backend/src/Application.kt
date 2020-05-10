@@ -60,18 +60,6 @@ fun Application.module() {
     install(WebSockets) {
         pingPeriod = Duration.ofMinutes(1)
     }
-    install(Sessions) {
-        cookie<Session>("SESSION") {
-            cookie.domain = "127.0.0.1"
-            cookie.path = "/"
-            cookie.httpOnly = false
-            transform(SessionTransportTransformerMessageAuthentication(hashKey))
-        }
-    }
-
-    intercept(ApplicationCallPipeline.Features) {
-        call.sessions.getOrSet { Session(UUID.randomUUID()) }
-    }
 
     val playerService = PlayerService()
     val gameService = GameService()
@@ -135,11 +123,30 @@ fun Application.module() {
             }
         }
 
+        val gson = Gson()
+
         webSocket("/game/{gid}/player/{pid}") {
             val gameId = call.parameters["gid"]?.toIntOrNull()
             val playerId = call.parameters["pid"]?.toIntOrNull()
 
             gameServer.joinGame(gameId!!, playerId!!, this)
+
+            try {
+                incoming.consumeEach { frame ->
+                    // Frames can be [Text], [Binary], [Ping], [Pong], [Close].
+                    // We are only interested in textual messages, so we filter it.
+                    if (frame is Frame.Text) {
+                        val message = gson.fromJson(frame.readText(), Message::class.java)
+                        // Now it is time to process the text sent from the user.
+                        // At this point we have context about this connection, the session, the text and the server.
+                        // So we have everything we need.
+                        gameServer.receivedMessage(playerId, gameId, message)
+                    }
+                }
+
+            } finally {
+                //server.memberLeft(session.pid, this)
+            }
         }
 
 
@@ -160,8 +167,6 @@ fun Application.module() {
 //                call.respond(HttpStatusCode.Created, game)
 //            }
 //        }
-
-        val gson = Gson()
 
         webSocket("/game/{id}") {
 

@@ -46,11 +46,11 @@ export interface IGame {
 
 export class Game implements IGame{
 
-  constructor(public id: number = 0,
-              public admin?: Player,
-              public isRunning?: boolean,
-              public isPrivate?: boolean,
-              public settings?: GameSettings) {
+  constructor(public readonly id = null,
+              public readonly admin: Player,
+              public readonly isRunning: boolean = false,
+              public readonly isPrivate: boolean = true,
+              public readonly settings: GameSettings) {
   }
 
 }

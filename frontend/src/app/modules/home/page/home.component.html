@@ -1,21 +1,22 @@
-<div *ngIf="player$ | async as player">
-  <app-select-avatar [player]="player"></app-select-avatar>
+<div>
+  <app-select-avatar [avatar]="avatar"></app-select-avatar>
 
   <div class="field">
     <div class="control">
       <label>
         <input class="input" type="text" placeholder="Gib hier deinen Namen ein"
-               [(ngModel)]="player.username">
+               [(ngModel)]="username">
       </label>
     </div>
   </div>
 
   <div class="field">
     <div class="control">
-      <button class="button is-link" fxFlex="1 1 100%" (click)="gotoLobby(player)" *ngIf="!gameId">Privates Spiel
+      <button class="button is-link" fxFlex="1 1 100%" (click)="gotoLobby()" *ngIf="!gameId">Privates Spiel
         erstellen
       </button>
       <button class="button is-link" fxFlex="1 1 100%" (click)="joinGame()" *ngIf="gameId">Spiel beitreten
       </button>
     </div>
   </div>
+</div>

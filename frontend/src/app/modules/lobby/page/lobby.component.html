@@ -1,4 +1,4 @@
 <div *ngIf="game$ | async as game" class="wrapper">
-  <app-settings-card [settings]="game.settings" (changeRounds)="changeRounds($event)" (changeTime)="changeTime($event)"></app-settings-card>
+  <app-settings-card [settings]="game.settings" (changeRounds)="changeRounds(game)" (changeTime)="changeTime(game)"></app-settings-card>
   <app-game-link-card [id]="game.id"></app-game-link-card>
 </div>

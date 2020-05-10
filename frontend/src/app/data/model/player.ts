@@ -26,23 +26,7 @@ export class PlayerAdapter implements Serializer<IPlayer> {
 
 export class Player implements IPlayer {
 
-  constructor(public id = 0, public username = '', public avatar = 0) {
-  }
-
-  nextAvatar() {
-    this.avatar = AvatarService.instance.next(this.avatar);
-  }
-
-  lastAvatar() {
-    this.avatar = AvatarService.instance.last(this.avatar);
-  }
-
-  randomAvatar() {
-    this.avatar = AvatarService.instance.getRandomAvatarId();
-  }
-
-  avatarUrl() {
-    return AvatarService.instance.getAvatarUrl(this.avatar);
+  constructor(public readonly id = null, public readonly username = '', public readonly avatar = 0) {
   }
 
 }

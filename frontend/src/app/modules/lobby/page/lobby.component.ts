@@ -16,17 +16,17 @@ export class LobbyComponent implements OnInit {
 
   game$: Observable<Game>;
   player$: Observable<Player>;
-  member$: Observable<Player[]>;
+  member$: Observable<Player>;
 
   constructor(private route: ActivatedRoute, private gameFacade: GameFacade, private playerFacade: PlayerFacade, private gameService: GameService) {
   }
 
-  changeRounds(r) {
-
+  changeRounds(g: Game) {
+    this.gameService.updateSettings(g)
   }
 
-  changeTime(t) {
-
+  changeTime(g: Game) {
+    this.gameService.updateSettings(g)
   }
 
   ngOnInit() {

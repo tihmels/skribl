@@ -14,13 +14,13 @@ class GameService {
 
     fun create(g: Game): Game {
         val id = ids.incrementAndGet()
-        val game = g.copy(id = id)
+        val game = g.copy(id = id, settings = GameSettings())
         this.games[id] = game
         return game
     }
 
     fun delete(id: Int): Game = this.games.remove(id) ?: throw GameNotFoundException()
 
-    fun update(player: Game): Game = this.games.replace(player.id, player) ?: throw GameNotFoundException()
+    fun update(game: Game): Game = this.games.replace(game.id, game) ?: throw GameNotFoundException()
 
 }

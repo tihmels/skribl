@@ -1,5 +1,7 @@
 package websocket
 
+import com.google.gson.Gson
+import com.google.gson.JsonObject
 import game.Game
 import game.GameService
 import io.ktor.http.cio.websocket.Frame
@@ -15,6 +17,8 @@ class GameServer(private val playerService: PlayerService, private val gameServi
     private val players = ConcurrentHashMap<Player, MutableList<WebSocketSession>>()
 
     private val games = ConcurrentHashMap<Game, MutableList<Player>>()
+
+    private val gson = Gson()
 
     /**
      * Handles that a member identified with a session id and a socket joined.
@@ -35,10 +39,16 @@ class GameServer(private val playerService: PlayerService, private val gameServi
     /**
      * We received a message. Let's process it.
      */
-    suspend fun receivedMessage(playerId: UUID, gameId: UUID, message: Message) {
-//        val player = this.playerService.get(playerId)!!
-//        val game = this.gameService.getGame(gameId)!!
-//        this.message(player, game, message)
+    suspend fun receivedMessage(playerId: Int, gameId: Int, message: Message) {
+        val player = this.playerService.get(playerId)
+        val game = this.gameService.get(gameId)
+
+        if(message.action == Action.UPDATE) {
+            this.gameService.update(message.content!!)
+            this.broadcast(game, message)
+        }
+
+
     }
 
 
@@ -93,7 +103,7 @@ class GameServer(private val playerService: PlayerService, private val gameServi
         socketList.add(session)
 
         if (playerList.size > 1) {
-            broadcast(game, Message(player, action = Action.JOINED))
+            broadcast(game, Message(action = Action.JOINED, content = null))
         }
     }
 

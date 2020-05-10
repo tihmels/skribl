@@ -1,11 +1,19 @@
 package websocket
 
-import player.Player
-import java.util.*
+import com.google.gson.annotations.SerializedName
+import game.Game
 
-enum class Action {
-    JOINED,
-    LEFT,
+
+enum class Action(val str: String) {
+    @SerializedName("0")
+    JOINED("JOINED"),
+    @SerializedName("1")
+    LEFT("LEFT"),
+    @SerializedName("2")
+    RENAME("RENAME"),
+    @SerializedName("3")
+    UPDATE("UPDATE")
 }
 
-data class Message(val from: Player, val content: String = "", val action: Action? = null)
+
+data class Message(val content: Game?, val action: Action? = null)

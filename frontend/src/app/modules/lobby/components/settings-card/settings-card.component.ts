@@ -24,11 +24,11 @@ export class SettingsCardComponent implements OnInit {
   }
 
   setRounds(r: number) {
-    this.changeRounds.emit(r)
+    this.changeRounds.emit(r);
   }
 
   setTime(t: number) {
-    this.changeTime.emit(t)
+    this.changeTime.emit(t);
   }
 
   ngOnInit(): void {

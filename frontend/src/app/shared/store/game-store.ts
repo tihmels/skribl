@@ -8,7 +8,7 @@ import {Game} from '../../data/model/game';
 export class GameStore extends Store<Game> {
 
   constructor() {
-    super(new Game());
+    super(null);
   }
 
 }

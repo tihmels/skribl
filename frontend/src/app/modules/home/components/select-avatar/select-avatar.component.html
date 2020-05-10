@@ -1,6 +1,6 @@
 <div class="columns is-mobile is-centered">
   <div class="column is-narrow" fxLayoutAlign="center center">
-    <button class="button is-medium is-rounded is-outlined" (click)="player.lastAvatar()">
+    <button class="button is-medium is-rounded is-outlined" (click)="this.avatar = this.avatarService.last(this.avatar)">
               <span class="icon">
                 <fa-icon [icon]="arrowLeft"></fa-icon>
               </span>
@@ -8,11 +8,11 @@
   </div>
   <div class="column is-narrow">
     <figure class="image is-128x128 avatar">
-      <img class="is-rounded" [src]="player.avatarUrl()" (click)="player.randomAvatar()" alt="Avatar">
+      <img class="is-rounded" [src]="this.avatarService.getAvatarUrl(this.avatar)" (click)="this.avatar = this.avatarService.getRandomAvatarId()" alt="Avatar">
     </figure>
   </div>
   <div class="column is-narrow" fxLayoutAlign="center center">
-    <button class="button is-medium is-rounded is-outlined" (click)="player.nextAvatar()">
+    <button class="button is-medium is-rounded is-outlined" (click)="this.avatar = this.avatarService.next(this.avatar)">
               <span class="icon">
                 <fa-icon [icon]="arrowRight"></fa-icon>
               </span>

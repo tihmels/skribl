@@ -12,8 +12,8 @@ export class PlayerFacade {
   constructor(private playerApi: PlayerApi, private playerStore: PlayerStore) {
   }
 
-  public createPlayer(player: Player) {
-    return this.playerApi.create(player).pipe(tap(r => this.playerStore.setState(r)));
+  public createPlayer(username: string, avatar: number) {
+    return this.playerApi.create(new Player(null, username, avatar)).pipe(tap(r => this.playerStore.setState(r)));
   }
 
   public getCurrentPlayer() {

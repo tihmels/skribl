@@ -3,11 +3,11 @@ import {Player} from '../player';
 export enum Action {
   JOINED,
   LEFT,
-  RENAME
+  RENAME,
+  UPDATE
 }
 
 export interface Message {
-  from?: Player;
-  content?: string;
-  action?: Action;
+  action: Action,
+  content: any
 }

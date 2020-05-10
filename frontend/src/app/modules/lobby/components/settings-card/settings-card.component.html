@@ -10,7 +10,7 @@
       <label class="label">Runden</label>
       <div class="control">
         <div class="select">
-          <select [(ngModel)]="settings.selectedRounds" #round (change)="setRounds(round.value)">
+          <select [(ngModel)]="settings.selectedRounds" #round (change)="setRounds(+round.value)">
             <option *ngFor="let round of rounds" [value]="round">
               {{ round }}
             </option>
@@ -23,7 +23,7 @@
       <label class="label">Zeit</label>
       <div class="control">
         <div class="select">
-          <select  [(ngModel)]="settings.selectedTime" #time (change)="setTime(time.value)">
+          <select  [(ngModel)]="settings.selectedTime" #time (change)="setTime(+time.value)">
             <option *ngFor="let time of times; let i = index" [value]="time">
               {{ time }}
             </option>
