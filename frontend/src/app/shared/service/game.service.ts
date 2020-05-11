@@ -5,13 +5,14 @@ import {Observable} from 'rxjs';
 import {GameStore} from '../store/game-store';
 import {PlayerStore} from '../store/player-store';
 import {Game, GameAdapter} from '../../data/model/game';
+import {catchError, map, tap} from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GameService {
 
-  messages: Observable<Message>;
+  messages$: Observable<any>;
 
   constructor(private gameStore: GameStore, private playerState: PlayerStore, private gameAdapter: GameAdapter, private websocket: SocketService) {
   }
@@ -25,18 +26,22 @@ export class GameService {
     const game = this.gameStore.state;
     const player = this.playerState.state;
     this.websocket.connect(game.id, player.id);
-    this.messages = this.websocket.getSocketObservable();
-    this.subscribe();
+    this.messages$ = this.websocket.messages$.pipe(
+      catchError(error => {
+        throw error;
+      }),
+      tap({
+          next: (data) => console.log(data),
+          error: error => console.log('Error:', error),
+          complete: () => console.log('Connection Closed')
+        }
+      )
+    );
+    this.subscribe()
   }
 
   subscribe() {
-    this.messages.subscribe(
-      msg => this.receiveMessage(msg),
-      // Called whenever there is a message from the server
-      err => console.log(err),
-      // Called if WebSocket API signals some kind of error
-      () => console.log('complete'));
-    // Called when connection is closed (for whatever reason)  )
+    this.websocket.messages$.subscribe(result => console.log(result))
   }
 
   receiveMessage(message: Message) {

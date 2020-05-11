@@ -12,11 +12,12 @@
 
   <div class="field">
     <div class="control">
-      <button class="button is-link" fxFlex="1 1 100%" (click)="gotoLobby()" *ngIf="!gameId">Privates Spiel
-        erstellen
+      <button class="button is-link" *ngIf="game" fxFlex="1 1 100%" (click)="joinGame()">
+        Spiel beitreten
       </button>
-      <button class="button is-link" fxFlex="1 1 100%" (click)="joinGame()" *ngIf="gameId">Spiel beitreten
-      </button>
+        <button class="button is-link" *ngIf="!game" fxFlex="1 1 100%" (click)="gotoLobby()">Privates Spiel
+          erstellen
+        </button>
     </div>
   </div>
 </div>

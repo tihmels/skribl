@@ -103,7 +103,7 @@ class GameServer(private val playerService: PlayerService, private val gameServi
         socketList.add(session)
 
         if (playerList.size > 1) {
-            broadcast(game, Message(action = Action.JOINED, content = null))
+            broadcast(game, Message(from = playerId, game = gameId, action = Action.JOINED, content = null))
         }
     }
 

@@ -8,18 +8,14 @@ const routes: Routes = [
     component: ContentLayoutComponent,
     children: [
       {
-        path: 'welcome',
-        loadChildren: () =>
-          import('./modules/home/home.module').then(m => m.HomeModule)
-      },
-      {
         path: 'lobby',
         loadChildren: () =>
           import('./modules/lobby/lobby.module').then(m => m.LobbyModule)
       },
       {
-        path: '**',
-        redirectTo: 'welcome'
+        path: '',
+        loadChildren: () =>
+          import('./modules/home/home.module').then(m => m.HomeModule)
       }
     ]
   },

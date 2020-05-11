@@ -17,6 +17,12 @@ export class GameFacade {
     return this.gameStore.state$;
   }
 
+  public getGame(id: number) {
+    return this.gameApi.get(id).pipe(
+      tap(result => this.gameStore.setState(result))
+    )
+  }
+
   public getCurrentGame() {
     return this.gameStore.state;
   }

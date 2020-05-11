@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {AfterViewInit, Component, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {GameService} from '../../../shared/service/game.service';
 import {Observable} from 'rxjs';
@@ -12,7 +12,7 @@ import {PlayerFacade} from '../../../shared/service/player-facade';
   templateUrl: './lobby.component.html',
   styleUrls: ['./lobby.component.scss']
 })
-export class LobbyComponent implements OnInit {
+export class LobbyComponent implements OnInit, AfterViewInit {
 
   game$: Observable<Game>;
   player$: Observable<Player>;
@@ -32,7 +32,13 @@ export class LobbyComponent implements OnInit {
   ngOnInit() {
     this.game$ = this.gameFacade.getGameObservable();
     this.player$ = this.playerFacade.getPlayerObservable();
+  }
+
+  ngAfterViewInit() {
     this.gameService.connect()
+    this.gameService.messages$.subscribe(
+
+    )
   }
 
 }

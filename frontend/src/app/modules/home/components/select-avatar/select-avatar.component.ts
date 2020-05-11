@@ -10,6 +10,7 @@ import {AvatarService} from '../../../../shared/service/avatar.service';
 })
 export class SelectAvatarComponent implements OnInit {
 
+  //TODO: AvatarService get avatar slows down application... elaborate alternatives
   @Input('avatar') avatar: number;
 
   arrowLeft = faAngleLeft;

@@ -16,4 +16,4 @@ enum class Action(val str: String) {
 }
 
 
-data class Message(val content: Game?, val action: Action? = null)
+data class Message(val from: Int?, val game: Int?, val content: Game?, val action: Action? = null)

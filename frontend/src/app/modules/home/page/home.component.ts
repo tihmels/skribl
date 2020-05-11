@@ -14,28 +14,36 @@ export class HomeComponent implements OnInit {
   username: string = '';
   avatar: number = 0;
 
-  gameId: number;
+  game: number;
 
   constructor(private playerFacade: PlayerFacade,
               private gameFacade: GameFacade,
               private router: Router,
               private route: ActivatedRoute) {
-    this.gameId = +this.route.snapshot.paramMap.get('id');
   }
 
   gotoLobby() {
     this.playerFacade.createPlayer(this.username, this.avatar).pipe(
       switchMap(player => this.gameFacade.createGame(player))
     ).subscribe(
-      _ => this.router.navigate(['lobby'])
+      _ => this.router.navigate(['/lobby'])
     );
   }
 
   joinGame() {
-
+    this.playerFacade.createPlayer(this.username, this.avatar).subscribe(
+      _ => this.router.navigate(['/lobby'])
+    );
   }
 
   ngOnInit(): void {
+    this.route.data.subscribe(
+      data => {
+        if (data.game) {
+          this.game = data.game.id;
+        }
+      }
+    );
   }
 
 }

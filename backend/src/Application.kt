@@ -59,6 +59,12 @@ fun Application.module() {
     }
     install(WebSockets) {
         pingPeriod = Duration.ofMinutes(1)
+        timeout = Duration.ofSeconds(15)
+        maxFrameSize = Long.MAX_VALUE
+        masking = false
+    }
+    install(Sessions) {
+        cookie<Session>("SESSION")
     }
 
     val playerService = PlayerService()
@@ -74,7 +80,9 @@ fun Application.module() {
             }
 
             post {
-                call.respond(HttpStatusCode.Created, playerService.create(call.receive()))
+                val player = playerService.create(call.receive())
+                call.sessions.set(Session(player.id))
+                call.respond(HttpStatusCode.Created, player)
             }
 
             put {
@@ -125,63 +133,20 @@ fun Application.module() {
 
         val gson = Gson()
 
-        webSocket("/game/{gid}/player/{pid}") {
-            val gameId = call.parameters["gid"]?.toIntOrNull()
-            val playerId = call.parameters["pid"]?.toIntOrNull()
-
-            gameServer.joinGame(gameId!!, playerId!!, this)
-
-            try {
-                incoming.consumeEach { frame ->
-                    // Frames can be [Text], [Binary], [Ping], [Pong], [Close].
-                    // We are only interested in textual messages, so we filter it.
-                    if (frame is Frame.Text) {
-                        val message = gson.fromJson(frame.readText(), Message::class.java)
-                        // Now it is time to process the text sent from the user.
-                        // At this point we have context about this connection, the session, the text and the server.
-                        // So we have everything we need.
-                        gameServer.receivedMessage(playerId, gameId, message)
-                    }
-                }
-
-            } finally {
-                //server.memberLeft(session.pid, this)
-            }
-        }
-
-
-//        get("/game/{id}") {
-//            val id = call.parameters["id"]
-//            gameService.getGame(UUID.fromString(id))?.let {
-//                call.respond(HttpStatusCode.Created, it)
-//            }
-//        }
-
-//        post("/game") {
-//            val session = call.sessions.get<Session>()
-//            val request = call.receive<CreateGameRequest>()
-//
-//            session?.let {
-//                playerService.update(it.id, request.admin)
-//                val game = gameService.createGame(request.admin, request.isPrivate)
-//                call.respond(HttpStatusCode.Created, game)
-//            }
-//        }
-
         webSocket("/game/{id}") {
+            val gameId = call.parameters["id"]?.toIntOrNull()
 
             // First of all we get the session.
             val session = call.sessions.get<Session>()
-            val gameId = call.parameters["id"]
 
             // We check that we actually have a session. We should always have one,
             // since we have defined an interceptor before to set one.
-            if (session == null || gameId == null) {
+            if (session == null) {
                 close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "No session"))
                 return@webSocket
             }
 
-            //gameServer.memberJoin(session.id, gameId, this)
+            gameServer.joinGame(gameId!!, session.id, this)
 
             try {
                 incoming.consumeEach { frame ->
@@ -192,7 +157,7 @@ fun Application.module() {
                         // Now it is time to process the text sent from the user.
                         // At this point we have context about this connection, the session, the text and the server.
                         // So we have everything we need.
-                        //gameServer.receivedMessage(session.id, gameId, message)
+                        //gameServer.receivedMessage(playerId, gameId, message)
                     }
                 }
 
@@ -202,7 +167,41 @@ fun Application.module() {
         }
     }
 
+//        webSocket("/game/{id}") {
+//
+//            // First of all we get the session.
+//            val session = call.sessions.get<Session>()
+//            val gameId = call.parameters["id"]
+//
+//            // We check that we actually have a session. We should always have one,
+//            // since we have defined an interceptor before to set one.
+//            if (session == null || gameId == null) {
+//                close(CloseReason(CloseReason.Codes.VIOLATED_POLICY, "No session"))
+//                return@webSocket
+//            }
+//
+//            //gameServer.memberJoin(session.id, gameId, this)
+//
+//            try {
+//                incoming.consumeEach { frame ->
+//                    // Frames can be [Text], [Binary], [Ping], [Pong], [Close].
+//                    // We are only interested in textual messages, so we filter it.
+//                    if (frame is Frame.Text) {
+//                        val message = gson.fromJson(frame.readText(), Message::class.java)
+//                        // Now it is time to process the text sent from the user.
+//                        // At this point we have context about this connection, the session, the text and the server.
+//                        // So we have everything we need.
+//                        //gameServer.receivedMessage(session.id, gameId, message)
+//                    }
+//                }
+//
+//            } finally {
+//                //server.memberLeft(session.pid, this)
+//            }
+//        }
+//    }
+
 }
 
-data class Session(val id: UUID)
+data class Session(val id: Int)
 
